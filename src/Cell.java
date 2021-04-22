@@ -64,6 +64,28 @@ public class Cell {
         }
     }
 
+    public Animal reproduce(int plantEnergy) {
+        var strongestAnimals = new ArrayList<Animal>();
+        for (var element : elements) {
+            if (element.getMapElementType() == MapElementType.Animal) {
+                var animal = (Animal) element;
+                if (strongestAnimals.isEmpty()) {
+                    strongestAnimals.add(animal);
+                } else {
+                    var exampleAnimal = strongestAnimals.get(0);
+
+                    if (exampleAnimal.getEnergy() < animal.getEnergy()) {
+                        strongestAnimals.clear();
+                        strongestAnimals.add(animal);
+                    } else if (exampleAnimal.getEnergy() == animal.getEnergy()) {
+                        strongestAnimals.add(animal);
+                    }
+                }
+            }
+        }
+
+    }
+
     @Override
     public String toString() {
         return elements.get(0).toString();

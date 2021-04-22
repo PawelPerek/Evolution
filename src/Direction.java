@@ -1,16 +1,16 @@
 public enum Direction {
-    North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest
+    North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest;
 
-    public int[] toVector() {
+    public Vector toVector() {
         return switch (this) {
-            case North -> {0, -1};
-            case NorthEast -> {1, -1};
-            case East -> {1, 0};
-            case SouthEast -> {1, 1};
-            case South -> {0, 1};
-            case SouthWest -> {-1, 1};
-            case West -> {-1, 0};
-            case NorthWest -> {-1, -1};
+            case North -> new Vector(0, -1);
+            case NorthEast -> new Vector(1, -1);
+            case East -> new Vector(1, 0);
+            case SouthEast -> new Vector(1, 1);
+            case South -> new Vector(0, 1);
+            case SouthWest -> new Vector(-1, 1);
+            case West -> new Vector(-1, 0);
+            case NorthWest -> new Vector(-1, -1);
         };
     }
 
