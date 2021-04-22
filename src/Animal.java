@@ -6,8 +6,12 @@ public class Animal implements MapElement{
     private int energy;
     private Direction direction; 
 
-    Animal(int energy) {
-        this.energy = energy;
+    Animal(int initialEnergy) {
+        energy = initialEnergy;
+    }
+    
+    Animal(Animal mother, Animal father) {
+        energy = mother.giveBirth() + father.giveBirth();
     }
 
     @Override
@@ -19,8 +23,20 @@ public class Animal implements MapElement{
         return energy;
     }
     
-    public void addEnergy(int newEnergy) {
-        energy += newEnergy;
+    public void eatPlant(int additionalEnergy) {
+        energy += additionalEnergy;
+    }
+    
+    public int giveBirth() {
+        var energyLoss = energy / 4;
+        
+        loseEnergy(energyLoss);
+        
+        return energyLoss;
+    }
+    
+    public void loseEnergy(int lostEnergy) {
+        energy -= lostEnergy;
     }
     
     public int rotate() {

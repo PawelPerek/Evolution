@@ -24,5 +24,6 @@ public class Engine {
         map.traverse((cell) -> cell.removeDeadAnimals());
         map.traverse((cell) -> cell.moveAnimals());
         map.traverse((cell) -> cell.eatPlant(config.plantEnergy()));
+        map.traverse((cell) -> cell.reproduce(config.startEnergy()));
     } 
 }

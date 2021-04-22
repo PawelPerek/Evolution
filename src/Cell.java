@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Cell {
     private boolean isJungle;
@@ -25,6 +26,7 @@ public class Cell {
             if (element.getMapElementType() == MapElementType.Animal) {
                 var animal = (Animal) element;
                 animal.rotate();
+                animal.lose();
             }
         }
     }
@@ -57,14 +59,14 @@ public class Cell {
             var sharedEnergy = plantEnergy / strongestAnimals.size();
 
             for (var animal : strongestAnimals) {
-                animal.addEnergy(sharedEnergy);
+                animal.eatPlant(sharedEnergy);
             }
 
             elements.remove(plant);
         }
     }
 
-    public Animal reproduce(int plantEnergy) {
+    public Animal reproduce(int startEnergy) {
         var strongestAnimals = new ArrayList<Animal>();
         for (var element : elements) {
             if (element.getMapElementType() == MapElementType.Animal) {
@@ -84,6 +86,19 @@ public class Cell {
             }
         }
 
+        if(strongestAnimals.size() == 2) {
+            return new Animal(startEnergy, strongestAnimals.get(0), strongestAnimals.get(1));
+        } else if (strongestAnimals.size() > 2) {
+            var rng = new Random();
+
+            var mother = strongestAnimals.get(rng.nextInt(strongestAnimals.size()));
+            strongestAnimals.remove(mother);
+            var father = strongestAnimals.get(rng.nextInt(strongestAnimals.size()));
+
+            return new Animal(startEnergy, mother, father);
+        }
+
+        return null;
     }
 
     @Override
