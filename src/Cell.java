@@ -2,14 +2,8 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class Cell {
-    private boolean isJungle;
-
     private TreeSet<Animal> animals = new TreeSet<>((a1, a2) -> a2.getEnergy() - a1.getEnergy());
     private Plant plant = null;
-
-    Cell(boolean isJungle) {
-        this.isJungle = isJungle;
-    }
 
     public void placeAnimal(Animal animal) {
         animals.add(animal);
@@ -47,7 +41,7 @@ public class Cell {
 
     public Animal reproduce() {
         Animal newborn = null;
-        
+
         if (animals.size() >= 2) {
             var parents = animals.stream().limit(2).collect(Collectors.toList());
 
