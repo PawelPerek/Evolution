@@ -1,108 +1,58 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class Cell {
     private boolean isJungle;
-    private List<MapElement> elements = new ArrayList<MapElement>();
+
+    private TreeSet<Animal> animals = new TreeSet<>((a1, a2) -> a2.getEnergy() - a1.getEnergy());
+    private Plant plant = null;
 
     Cell(boolean isJungle) {
         this.isJungle = isJungle;
     }
 
+    public void placeAnimal(Animal animal) {
+        animals.add(animal);
+    }
+
     public void removeDeadAnimals() {
-        for (var element : elements) {
-            if (element.getMapElementType() == MapElementType.Animal) {
-                var animal = (Animal) element;
-                if (animal.getEnergy() <= 0) {
-                    elements.remove(animal);
-                }
+        for (var animal : animals) {
+            if (animal.getEnergy() <= 0) {
+                animals.remove(animal);
             }
         }
     }
 
     public void moveAnimals() {
-        for (var element : elements) {
-            if (element.getMapElementType() == MapElementType.Animal) {
-                var animal = (Animal) element;
-                animal.rotate();
-                animal.lose();
-            }
+        for (var animal : animals) {
+            animal.rotate();
         }
     }
 
     public void eatPlant(int plantEnergy) {
-        Plant plant = null;
-        var strongestAnimals = new ArrayList<Animal>();
+        if (plant != null && !animals.isEmpty()) {
+            var maxEnergy = animals.first().getEnergy();
+            var strongestAnimals = animals.stream().takeWhile(animal -> animal.getEnergy() == maxEnergy).collect(Collectors.toList());
 
-        for (var element : elements) {
-            if (element.getMapElementType() == MapElementType.Animal) {
-                var animal = (Animal) element;
-                if (strongestAnimals.isEmpty()) {
-                    strongestAnimals.add(animal);
-                } else {
-                    var exampleAnimal = strongestAnimals.get(0);
-
-                    if (exampleAnimal.getEnergy() < animal.getEnergy()) {
-                        strongestAnimals.clear();
-                        strongestAnimals.add(animal);
-                    } else if (exampleAnimal.getEnergy() == animal.getEnergy()) {
-                        strongestAnimals.add(animal);
-                    }
-                }
-            } else if (element.getMapElementType() == MapElementType.Plant) {
-                plant = (Plant) element;
-            }
-        }
-
-        if (plant != null) {
             var sharedEnergy = plantEnergy / strongestAnimals.size();
-
-            for (var animal : strongestAnimals) {
+            
+            for(var animal : strongestAnimals) {
                 animal.eatPlant(sharedEnergy);
             }
 
-            elements.remove(plant);
+            plant = null;
         }
     }
 
     public Animal reproduce(int startEnergy) {
-        var strongestAnimals = new ArrayList<Animal>();
-        for (var element : elements) {
-            if (element.getMapElementType() == MapElementType.Animal) {
-                var animal = (Animal) element;
-                if (strongestAnimals.isEmpty()) {
-                    strongestAnimals.add(animal);
-                } else {
-                    var exampleAnimal = strongestAnimals.get(0);
+        
 
-                    if (exampleAnimal.getEnergy() < animal.getEnergy()) {
-                        strongestAnimals.clear();
-                        strongestAnimals.add(animal);
-                    } else if (exampleAnimal.getEnergy() == animal.getEnergy()) {
-                        strongestAnimals.add(animal);
-                    }
-                }
-            }
-        }
-
-        if(strongestAnimals.size() == 2) {
-            return new Animal(startEnergy, strongestAnimals.get(0), strongestAnimals.get(1));
-        } else if (strongestAnimals.size() > 2) {
-            var rng = new Random();
-
-            var mother = strongestAnimals.get(rng.nextInt(strongestAnimals.size()));
-            strongestAnimals.remove(mother);
-            var father = strongestAnimals.get(rng.nextInt(strongestAnimals.size()));
-
-            return new Animal(startEnergy, mother, father);
-        }
 
         return null;
     }
 
     @Override
     public String toString() {
-        return elements.get(0).toString();
+        return animals.stream().map(el -> el.getEnergy()).collect(Collectors.toList()).toString();
     }
 }

@@ -4,12 +4,21 @@ import java.util.List;
 public class Map {
     private List<List<Cell>> map;
 
-    Map(int width, int height) {
+    Map(int width, int height, double jungleRatio) {
+        var jungleWidth = width * jungleRatio;
+        var jungleHeight = height * jungleRatio;
+
+        var jungleX = width / 2 - jungleWidth / 2;
+        var jungleY = height / 2 - jungleHeight / 2;
+
         map = new ArrayList<List<Cell>>(width);
-        for (int i = 0; i < width; i++) {
+        for (int y = 0; y < width; y++) {
             map.add(new ArrayList<Cell>(height));
-            for (int j = 0; j < height; j++) {
-                map.get(i).add(new Cell(false));
+            for (int x = 0; x < height; x++) {
+                var isJungle = 
+                    x > jungleX && x < jungleX + jungleWidth &&
+                    y > jungleY && y < jungleY + jungleHeight;
+                map.get(y).add(new Cell(isJungle));
             }
         }
     }

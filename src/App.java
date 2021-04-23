@@ -6,10 +6,5 @@ public class App {
         engine.generateConfig();
 
         engine.start();
-
-        var d = Direction.North;
-
-        System.out.println(d.toVector());
-
     }
 }

@@ -39,15 +39,13 @@ public class Animal implements MapElement{
         energy -= lostEnergy;
     }
     
-    public int rotate() {
+    public void rotate() {
         var rng = new Random();
         var index = rng.nextInt(32);
 
         var rotation = genotype[index];
 
         direction.rotate(rotation);
-
-        return energy;
     }
 
 }
