@@ -32,11 +32,12 @@ public class Cell {
     public void eatPlant(int plantEnergy) {
         if (plant != null && !animals.isEmpty()) {
             var maxEnergy = animals.first().getEnergy();
-            var strongestAnimals = animals.stream().takeWhile(animal -> animal.getEnergy() == maxEnergy).collect(Collectors.toList());
+            var strongestAnimals = animals.stream().takeWhile(animal -> animal.getEnergy() == maxEnergy)
+                    .collect(Collectors.toList());
 
             var sharedEnergy = plantEnergy / strongestAnimals.size();
-            
-            for(var animal : strongestAnimals) {
+
+            for (var animal : strongestAnimals) {
                 animal.eatPlant(sharedEnergy);
             }
 
@@ -44,11 +45,16 @@ public class Cell {
         }
     }
 
-    public Animal reproduce(int startEnergy) {
+    public Animal reproduce() {
+        Animal newborn = null;
         
+        if (animals.size() >= 2) {
+            var parents = animals.stream().limit(2).collect(Collectors.toList());
 
+            newborn = new Animal(parents.get(0), parents.get(1));
+        }
 
-        return null;
+        return newborn;
     }
 
     @Override

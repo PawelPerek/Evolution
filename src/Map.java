@@ -1,8 +1,12 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Map {
     private List<List<Cell>> map;
+    private Set<Cell> freeJungleCells = new HashSet<>();
+    private Set<Cell> freeSteppeCells = new HashSet<>();
 
     Map(int width, int height, double jungleRatio) {
         var jungleWidth = width * jungleRatio;
