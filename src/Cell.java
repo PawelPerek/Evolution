@@ -10,11 +10,11 @@ public class Cell {
     }
 
     public void growPlant() {
-        this.plant = false;
+        this.plant = true;
     }
     
     public void eatPlant() {
-        this.plant = true;
+        this.plant = false;
     }
     
     public boolean hasPlant() {

@@ -22,9 +22,9 @@ public class GameMap {
     private double jungleWidth;
     private double jungleHeight;
 
-    GameMap(int width, int height, double jungleRatio) {
+    GameMap(int width, int height, double jungleRatio, int initialEnergy) {
         this.width = width;
-        this.height = width;
+        this.height = height;
 
         jungleWidth = width * jungleRatio;
         jungleHeight = height * jungleRatio;
@@ -40,11 +40,38 @@ public class GameMap {
                 var cell = new Cell(x, y);
                 keys[x][y] = cell;
                 map.put(cell, new TreeSet<>((a1, a2) -> a2.getEnergy() - a1.getEnergy()));
+
+                returnFreeCell(cell);
             }
+        }
+        var rng = new Random();
+
+        for(int i = 0; i < 10; i++) {
+            var x = rng.nextInt(width);
+            var y = rng.nextInt(height);
+
+            var position = getKey(x, y);
+
+            var animal = new Animal(initialEnergy);
+
+            map.get(position).add(animal);
+
         }
     }
 
     public Cell getKey(int x, int y) {
+        if(x < 0) {
+            x += width;
+        }
+        if(x >= width) {
+            x -= width;
+        }
+        if(y < 0) {
+            y += height;
+        }
+        if(y >= height) {
+            y -= height;
+        }
         return keys[x][y];
     }
 
@@ -115,6 +142,7 @@ public class GameMap {
     public void removeDeadAnimals() {
         for (var entry : map.entrySet()) {
             for (var animal : entry.getValue()) {
+                System.out.println(animal.getEnergy());
                 if (animal.getEnergy() <= 0) {
                     removeAnimal(animal, entry.getKey());
                 }
@@ -127,17 +155,21 @@ public class GameMap {
 
         var newPosition = getKey(currentPosition.x + vector.x, currentPosition.y + vector.y);
 
-        map.get(currentPosition).remove(animal);
         map.get(newPosition).add(animal);
     }
 
     public void moveAnimals(int lostEnergy) {
+        var toRemove = new HashMap<Cell, Animal>();
         for (var entry : map.entrySet()) {
             for (var animal : entry.getValue()) {
                 animal.rotate();
-                changeAnimalPosition(animal, entry.getKey());
                 animal.loseEnergy(lostEnergy);
+                changeAnimalPosition(animal, entry.getKey());
+                toRemove.put(entry.getKey(), animal);
             }
+        }
+        for(var entry : toRemove.entrySet()) {
+            removeAnimal(entry.getValue(), entry.getKey());
         }
     }
 
@@ -188,5 +220,21 @@ public class GameMap {
         if(steppeCell != null) {
             steppeCell.growPlant();
         } 
+    }
+    
+    public RendererState getState(int x, int y) {
+        var cell = getKey(x, y);
+        var animals = map.get(cell);
+
+        if(!animals.isEmpty()) {
+            return RendererState.Animal;
+        }
+        if(cell.hasPlant()) {
+            return RendererState.Plant;
+        }
+        if(isInJungle(x, y)) {
+            return RendererState.Jungle;
+        }
+        return RendererState.Steppe;
     }
 }
