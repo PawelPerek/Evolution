@@ -8,6 +8,11 @@ public class Map {
 
     private Set<Cell> freeJungleCells = new HashSet<>();
     private Set<Cell> freeSteppeCells = new HashSet<>();
+    
+    private Set<Animal> allAnimals = new HashSet<>();
+
+    private int width;
+    private int height;
 
     private double jungleX;
     private double jungleY;
@@ -15,6 +20,9 @@ public class Map {
     private double jungleHeight;
 
     Map(int width, int height, double jungleRatio) {
+        this.width = width;
+        this.height = width;
+
         jungleWidth = width * jungleRatio;
         jungleHeight = height * jungleRatio;
 
@@ -25,8 +33,8 @@ public class Map {
         for (int y = 0; y < width; y++) {
             map.add(new ArrayList<Cell>(height));
             for (int x = 0; x < height; x++) {
-                var cell = new Cell();
-                map.get(y).add(new Cell());
+                var cell = new Cell(x, y);
+                map.get(y).add(cell);
 
                 if(isInJungle(x, y)) {
                     freeJungleCells.add(cell);
@@ -61,12 +69,45 @@ public class Map {
         return randomCell;
     }
     
-    public void addFreeJungleCell(Cell cell) {
-        freeJungleCells.add(cell);
+    public void returnFreeCell(Cell cell) {
+        if(isInJungle(cell.x, cell.y)) {
+            freeJungleCells.add(cell);
+        } else {
+            freeSteppeCells.add(cell);
+        }
+    }
+    
+    public Cell searchForFreeSpace(Cell center) {
+        for(var direction : Direction.values()) {
+            var vec = direction.toVector();
+            var newX = center.x + vec.x;
+            var newY = center.y + vec.y;
+
+            if(newX > 0 && newX < width && newY > 0 && newY < height) {
+                var cell = map.get(newX).get(newY);
+                
+                if(cell.isFree()) {
+                    return cell;
+                }
+            }
+        }
+
+        return null;
     }
 
-    public void addFreeSteppeCell(Cell cell) {
-        freeJungleCells.add(cell);
+    public void removeAnimal(Animal animal, Cell cell) {
+        allAnimals.remove(animal);
+        cell.removeAnimal(animal);
+    }
+
+    public void moveAnimal(Animal animal, Cell oldCell, Cell cell) {
+        allAnimals.add(animal);
+        cell.placeAnimal(animal);
+    }
+    
+    public void placeAnimal(Animal animal, Cell cell) {
+        allAnimals.add(animal);
+        cell.placeAnimal(animal);
     }
 
     public void traverse(Runner runner) {

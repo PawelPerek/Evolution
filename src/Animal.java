@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class Animal implements MapElement{ 
+public class Animal { 
     
     final int[] genotype = new int[32]; 
     private int energy;
@@ -12,11 +12,6 @@ public class Animal implements MapElement{
     
     Animal(Animal mother, Animal father) {
         energy = mother.giveBirth() + father.giveBirth();
-    }
-
-    @Override
-    public MapElementType getMapElementType() {
-        return MapElementType.Animal;
     }
 
     public int getEnergy() {
@@ -45,7 +40,7 @@ public class Animal implements MapElement{
 
         var rotation = genotype[index];
 
-        direction.rotate(rotation);
+        direction = direction.rotate(rotation);
     }
 
 }

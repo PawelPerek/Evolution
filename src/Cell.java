@@ -1,30 +1,45 @@
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class Cell {
     private TreeSet<Animal> animals = new TreeSet<>((a1, a2) -> a2.getEnergy() - a1.getEnergy());
-    private Plant plant = null;
+    private boolean isPlant = false;
+
+    public final int x;
+    public final int y;
+
+    Cell(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void growPlant() {
+        isPlant = true;
+    }
 
     public void placeAnimal(Animal animal) {
         animals.add(animal);
     }
+    
+    public void removeAnimal(Animal animal) {
+        animals.remove(animal);
+    }
 
-    public void removeDeadAnimals() {
+    public Set<Animal> getDeadAnimals() {
+        var deadAnimals = new HashSet<Animal>();
         for (var animal : animals) {
             if (animal.getEnergy() <= 0) {
-                animals.remove(animal);
+                deadAnimals.add(animal);
             }
         }
+
+        return deadAnimals;
     }
 
-    public void moveAnimals() {
-        for (var animal : animals) {
-            animal.rotate();
-        }
-    }
-
-    public void eatPlant(int plantEnergy) {
-        if (plant != null && !animals.isEmpty()) {
+    public boolean eatPlant(int plantEnergy) {
+        if (isPlant && !animals.isEmpty()) {
             var maxEnergy = animals.first().getEnergy();
             var strongestAnimals = animals.stream().takeWhile(animal -> animal.getEnergy() == maxEnergy)
                     .collect(Collectors.toList());
@@ -35,8 +50,11 @@ public class Cell {
                 animal.eatPlant(sharedEnergy);
             }
 
-            plant = null;
+            isPlant = false;
+
+            return true;
         }
+        return false;
     }
 
     public Animal reproduce() {
@@ -49,6 +67,10 @@ public class Cell {
         }
 
         return newborn;
+    }
+    
+    public boolean isFree() {
+        return !isPlant && animals.isEmpty();
     }
 
     @Override
