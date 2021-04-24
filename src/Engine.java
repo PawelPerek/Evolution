@@ -1,5 +1,5 @@
 public class Engine {
-    private Map map;
+    private GameMap map;
     private Config config;
 
     public void generateConfig() {
@@ -14,38 +14,45 @@ public class Engine {
     } 
 
     public void start() {
-        map = new Map(config.width(), config.height(), config.jungleRatio());
+        map = new GameMap(config.width(), config.height(), config.jungleRatio());
+        loop();
     } 
 
     public void loop() {
-        map.traverse((cell) -> {
-            var deadAnimals = cell.getDeadAnimals();
-            for(var animal : deadAnimals) {
-                map.removeAnimal(animal, cell);
-            }
-        });
-        
-        map.moveAnimals();
+        map.removeDeadAnimals();
+        map.moveAnimals(config.moveEnergy());
+        map.eatPlants(config.plantEnergy());
+        map.reproduce(config.startEnergy() / 2);
+        map.growPlants();
 
-        map.traverse((cell) -> {
-            var isSuccessfulEat = cell.eatPlant(config.plantEnergy());
-            if(isSuccessfulEat) {
-                map.returnFreeCell(cell);
-            }
-        });
-        
-        map.traverse((cell) -> {
-            var baby = cell.reproduce();
-            if(baby != null) {
-                var freeSpace = map.searchForFreeSpace(cell);
-                if(freeSpace != null) {
-                    freeSpace.placeAnimal(baby);
-                }
-            }
-        });
-
-        map.getRandomJungleCell().growPlant();
-        map.getRandomSteppeCell().growPlant();
+        //map.traverse((cell) -> {
+        //    var deadAnimals = cell.getDeadAnimals();
+        //    for(var animal : deadAnimals) {
+        //        map.removeAnimal(animal, cell);
+        //    }
+        //});
+        //
+        //map.moveAnimals();
+//
+        //map.traverse((cell) -> {
+        //    var isSuccessfulEat = cell.eatPlant(config.plantEnergy());
+        //    if(isSuccessfulEat) {
+        //        map.returnFreeCell(cell);
+        //    }
+        //});
+        //
+        //map.traverse((cell) -> {
+        //    var baby = cell.reproduce();
+        //    if(baby != null) {
+        //        var freeSpace = map.searchForFreeSpace(cell);
+        //        if(freeSpace != null) {
+        //            freeSpace.placeAnimal(baby);
+        //        }
+        //    }
+        //});
+//
+        //map.getRandomJungleCell().growPlant();
+        //map.getRandomSteppeCell().growPlant();
 
     } 
 }

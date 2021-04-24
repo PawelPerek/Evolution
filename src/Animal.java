@@ -42,5 +42,9 @@ public class Animal {
 
         direction = direction.rotate(rotation);
     }
+    
+    public Direction getDirection() {
+        return this.direction;
+    }
 
 }
