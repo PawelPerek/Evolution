@@ -4,7 +4,7 @@
             "type": "java",
             "name": "(Launch) - Main",
             "request": "launch",
-            "vmArgs": "--module-path ../JavaFX/lib --add-modules javafx.controls,javafx.fxml",
+            "vmArgs": "--module-path ../JavaFX/lib --add-modules javafx.controls,javafx.fxml -noverify",
             "mainClass": "App",
             "projectName": "Evolution_da963ec"
         }
