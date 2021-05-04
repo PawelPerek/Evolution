@@ -1,3 +1,8 @@
+package Engine;
+
+import UI.RendererState;
+import Config.Config;
+
 public class Engine {
     private GameMap map;
     private Config config;

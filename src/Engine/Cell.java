@@ -1,3 +1,4 @@
+package Engine;
 public class Cell {
     private boolean plant = false;
 
