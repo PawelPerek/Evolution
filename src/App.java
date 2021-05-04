@@ -16,7 +16,7 @@ public class App extends Application {
     private final int HEIGHT = 600;
 
     public static void generateConfig() {
-        config = new Config(30, 20, 200, 1, 20, 0.1);
+        config = new Config(30, 20, 100, 1, 20, 0.3);
     }
 
     public static void main(String[] args) throws Exception {

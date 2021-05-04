@@ -142,7 +142,6 @@ public class GameMap {
     public void removeDeadAnimals() {
         for (var entry : map.entrySet()) {
             for (var animal : entry.getValue()) {
-                System.out.println(animal.getEnergy());
                 if (animal.getEnergy() <= 0) {
                     removeAnimal(animal, entry.getKey());
                 }
